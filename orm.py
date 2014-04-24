@@ -6,7 +6,6 @@ class Field(object):
     def __init__(self, tablename, fieldname):
         self.tablename = tablename
         self.fieldname = fieldname
-        super(Field, self).__init__()
 
     def __eq__(self, other):
         return self, other
@@ -18,14 +17,11 @@ class Field(object):
 class Table(object):
 
     def __init__(self, tablename):
-        self.tablename = tablename
-        super(Table, self).__init__()
+        self.__tablename = tablename # << this is the real case for __
 
     def __getattr__(self, item):
-        try:
-            return self.__getattribute__(item)
-        except AttributeError:
-            return Field(tablename=self.tablename, fieldname=item)
+        # __getattr__ only called, when python fails to found attribute using __getattribute__ and Co
+        return Field(tablename=self.__tablename, fieldname=item)
 
 
 class ModelParser(object):
